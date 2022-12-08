@@ -1,0 +1,33 @@
+/* {============================= Universal Styles =============================} */
+:root {
+    --primary-color: black;
+    --secondary-color: white;
+    --tertiary-color: lightcoral;
+    --quaternary-color: grey;
+}
+
+/* set content highlight color and background */
+::selection {
+    background-color: var(--tertiary-color);
+    color: var(--secondary-color);
+}
+
+
+/* {============================= Element Selectors =============================} */
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+}
+
+/* textarea {
+    background: transparent;
+    border: none;
+    resize: none;
+    color: #000000;
+    border-left: 1px solid black;
+    padding: 10px;
+} */
+
+/* {============================= Class Selectors =============================} */
+
+/* {============================= Id Selectors =============================} */
