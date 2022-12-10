@@ -8,7 +8,7 @@ let testApi = `https://api.openweathermap.org/data/2.5/weather?q=tokyo&appid=${w
 let userCityInput = $("#userCityInput");
 let searchBtnEl = $("#searchBtn");
 let clearAllBtnEl = $("#clearBtn");
-let resultCityArray = [];
+var resultCityArray = [];
 
 /* {============================= Functions (callback) =============================} */
 function getTestingApi(requestUrl) {
@@ -139,6 +139,7 @@ function pushDataToLocalStorage(cityArray) {
 }
 
 function init() {
+    var resultCityArray = []; // why need this one again? Already empty at the start?
     var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
     var exisitingData = userInputCityName_DeSerialization;
     if (exisitingData !== null) {
@@ -155,7 +156,10 @@ function init() {
 searchBtnEl.on("click", function (evt) {
     evt.preventDefault();
 
-    var searchedCityName = getUserInput();
+    var userInput = getUserInput();
+    var capitalizeduserInput = userInput[0].toUpperCase() + userInput.substring(1).toLowerCase();
+
+    var searchedCityName = (resultCityArray.includes(capitalizeduserInput)) ? alert("This app has already contained your input city") : userInput;
     var capitalizedCityName = searchedCityName[0].toUpperCase() + searchedCityName.substring(1).toLowerCase();
 
     $("#titleCity").text(`City: ${capitalizedCityName}`);
@@ -167,13 +171,25 @@ searchBtnEl.on("click", function (evt) {
     userCityInput.val("");
     console.log("------Inside Event Listener------");
     // console.log(getTestingApi(testApi));
+    console.log(resultCityArray);
+    console.log(userInput);
     console.log("------End Event Listener------");
 });
 
 clearAllBtnEl.on("click", function (evt) {
+    evt.preventDefault();
+
     localStorage.clear();
     resultCityArray = [];
     $(".list-group").text("");
+});
+
+$(".list-group").on("click", ".list-group-item", function (evt) {
+    evt.preventDefault();
+
+    var selectedCityName = $(this).text();
+    getTodayWeather(selectedCityName);
+    getFutureWeather(selectedCityName);
 })
 /* {============================= Calling functions  =============================} */
 init();
