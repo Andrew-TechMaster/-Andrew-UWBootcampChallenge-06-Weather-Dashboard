@@ -42,6 +42,7 @@ function transferTimestamp(unix_timestamp) {
 function getTodayWeather(userInputCity) {
     let todayWeatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userInputCity}&appid=${weatherApiKey}`;
     // let todayDate = dayjs().format('MM/DD/YYYY (dddd)')
+    $("#todayWeather").text("");
 
     fetch(todayWeatherApi)
         .then((response) => { return response.json(); })
@@ -60,24 +61,23 @@ function getTodayWeather(userInputCity) {
             // $("#todayWind").text(todayWind);
             // $("#todayHumidity").text(todayHumidity);
 
-            let prependedContent = `
-            <div class="card mb-5" id="todayWeather">
-                <div class="card-header">
-                    <h3 id="selectedCity">${userInputCity}  (${todayDate})  <img src="${todayWeatherIcon}"</h3>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">Temp: ${todayTemp}</p>
-                    <p class="card-text">Wind: ${todayWind}</p>
-                    <p class="card-text">Humidity: ${todayHumidity}</p>
-                </div>
+            let appendedTodayWeather = `
+            <div class="card-header">
+                <h3 id="selectedCity">${userInputCity}  (${todayDate})  <img src="${todayWeatherIcon}"</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Temp: ${todayTemp} C</p>
+                <p class="card-text">Wind: ${todayWind} MPH</p>
+                <p class="card-text">Humidity: ${todayHumidity} %</p>
             </div>`;
 
-            $("#majorSection").prepend(prependedContent);
+            $("#todayWeather").append(appendedTodayWeather);
         });
 }
 
 function getFutureWeather(userInputCIty) {
     let weatherFutureApi = `https://api.openweathermap.org/data/2.5/forecast?q=${userInputCIty}&appid=${weatherApiKey}`;
+    $("#forecastWeather").text("");
 
     fetch(weatherFutureApi)
         .then((response) => { return response.json(); })
@@ -122,6 +122,12 @@ function getUserInput() {
     return userCityInput.val();
 }
 
+function createCityListItem(listItemName) {
+    // let listItemName = getUserInput();
+    let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3 data-index=${listItemName}">${listItemName}</a>`
+    $(".list-group").append(appendedListItem);
+}
+
 /* {============================= Add Event Listener  =============================} */
 searchBtnEl.on("click", function (evt) {
     evt.preventDefault();
@@ -132,6 +138,8 @@ searchBtnEl.on("click", function (evt) {
     $("#titleCity").text(`City: ${capitalizedCityName}`);
     getTodayWeather(capitalizedCityName);
     getFutureWeather(capitalizedCityName);
+
+    createCityListItem(capitalizedCityName);
 
     console.log("------Inside Event Listener------");
     // console.log(getTestingApi(testApi));
