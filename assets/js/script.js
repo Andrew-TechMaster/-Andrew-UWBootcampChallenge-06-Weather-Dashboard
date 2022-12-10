@@ -52,13 +52,27 @@ function getTodayWeather(userInputCity) {
             let todayDate = transferTimestamp(data.dt);
             let todayWeatherIcon = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`;
             let todayTemp = data.main.temp;
-            let todayHumidity = data.main.humidity;
             let todayWind = data.wind.speed;
+            let todayHumidity = data.main.humidity;
 
-            $("#selectedCity").html(`${userInputCity}  ${todayDate}  <img src="${todayWeatherIcon}">`);
-            $("#todayTemp").text(todayTemp);
-            $("todayHumidity").text(todayHumidity);
-            $("todayWind").text(todayWind);
+            // $("#selectedCity").html(`${userInputCity}  ${todayDate}  <img src="${todayWeatherIcon}">`);
+            // $("#todayTemp").text(todayTemp);
+            // $("#todayWind").text(todayWind);
+            // $("#todayHumidity").text(todayHumidity);
+
+            let prependedContent = `
+            <div class="card mb-5" id="todayWeather">
+                <div class="card-header">
+                    <h3 id="selectedCity">${userInputCity}  (${todayDate})  <img src="${todayWeatherIcon}"</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Temp: ${todayTemp}</p>
+                    <p class="card-text">Wind: ${todayWind}</p>
+                    <p class="card-text">Humidity: ${todayHumidity}</p>
+                </div>
+            </div>`;
+
+            $("#majorSection").prepend(prependedContent);
         });
 }
 
@@ -70,17 +84,37 @@ function getFutureWeather(userInputCIty) {
         .then(function (data) {
             console.log("inside get future func");
             console.log(data);
+            let future5DaysData = data.list.slice(0, 5);
+            // console.log(future5DaysData);
+            // console.log(future5DaysData[0]);
+            // console.log(typeof future5DaysData);
 
-            // let todayDate = transferTimestamp(data.dt);
-            // let todayWeatherIcon = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`;
-            // let todayTemp = data.main.temp;
-            // let todayHumidity = data.main.humidity;
-            // let todayWind = data.wind.speed;
+            future5DaysData.forEach(element => {
+                let theDate = transferTimestamp(element.dt);
+                let theWeatherIcon = `https://openweathermap.org/img/w/${element.weather[0].icon}.png`;
+                let theTemp = element.main.temp;
+                let theHumidity = element.main.humidity;
+                let theWind = element.wind.speed;
 
-            // $("#selectedCity").html(`${userInputCity}  ${todayDate}  <img src="${todayWeatherIcon}">`);
-            // $("#todayTemp").text(todayTemp);
-            // $("todayHumidity").text(todayHumidity);
-            // $("todayWind").text(todayWind);
+                let appendedCard = `                    
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>${theDate}</h4>
+                        </div>
+                        <div class="card-body">
+                            <p><img src="${theWeatherIcon}"</p>
+                            <p class="card-text">Temp: ${theTemp} C</p>
+                            <p class="card-text">Wind: ${theWind} MPH</p>
+                            <p class="card-text">Humidity: ${theHumidity} %</p>
+                        </div>
+                    </div>
+                </div>`;
+
+                $("#forecastWeather").append(appendedCard);
+            });
+
+            $("#forecastWeather").prepend("<p>5-Day Forecast</p>");
         });
 }
 
@@ -94,6 +128,8 @@ searchBtnEl.on("click", function (evt) {
 
     var searchedCityName = getUserInput();
     var capitalizedCityName = searchedCityName[0].toUpperCase() + searchedCityName.substring(1).toLowerCase();
+
+    $("#titleCity").text(`City: ${capitalizedCityName}`);
     getTodayWeather(capitalizedCityName);
     getFutureWeather(capitalizedCityName);
 
