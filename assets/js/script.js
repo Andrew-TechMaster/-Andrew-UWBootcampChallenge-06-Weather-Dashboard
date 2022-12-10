@@ -7,6 +7,8 @@ let testApi = `https://api.openweathermap.org/data/2.5/weather?q=tokyo&appid=${w
 
 let userCityInput = $("#userCityInput");
 let searchBtnEl = $("#searchBtn");
+let clearAllBtnEl = $("#clearBtn");
+let resultCityArray = [];
 
 /* {============================= Functions (callback) =============================} */
 function getTestingApi(requestUrl) {
@@ -124,8 +126,29 @@ function getUserInput() {
 
 function createCityListItem(listItemName) {
     // let listItemName = getUserInput();
-    let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3 data-index=${listItemName}">${listItemName}</a>`
+    let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3 data-cityName=${listItemName}">${listItemName}</a>`
     $(".list-group").append(appendedListItem);
+
+    resultCityArray.push(listItemName);
+    pushDataToLocalStorage(resultCityArray);
+}
+
+function pushDataToLocalStorage(cityArray) {
+    var userInputCityName_Serialization = JSON.stringify(cityArray);
+    localStorage.setItem("userInputCityName", userInputCityName_Serialization);
+}
+
+function init() {
+    var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
+    var exisitingData = userInputCityName_DeSerialization;
+    if (exisitingData !== null) {
+        resultCityArray = exisitingData;
+        // console.log(resultCityArray);
+        // console.log(resultCityArray[0]);
+        resultCityArray.forEach(element => {
+            createCityListItem(element);
+        })
+    }
 }
 
 /* {============================= Add Event Listener  =============================} */
@@ -141,9 +164,16 @@ searchBtnEl.on("click", function (evt) {
 
     createCityListItem(capitalizedCityName);
 
+    userCityInput.val("");
     console.log("------Inside Event Listener------");
     // console.log(getTestingApi(testApi));
     console.log("------End Event Listener------");
 });
 
+clearAllBtnEl.on("click", function (evt) {
+    localStorage.clear();
+    resultCityArray = [];
+    $(".list-group").text("");
+})
 /* {============================= Calling functions  =============================} */
+init();
