@@ -40,7 +40,7 @@ function transferTimestamp(unix_timestamp) {
 }
 
 function getTodayWeather(userInputCity) {
-    let todayWeatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userInputCity}&appid=${weatherApiKey}`;
+    let todayWeatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userInputCity}&appid=${weatherApiKey}&units=metric`;
     // let todayDate = dayjs().format('MM/DD/YYYY (dddd)')
     $("#todayWeather").text("");
 
@@ -76,7 +76,7 @@ function getTodayWeather(userInputCity) {
 }
 
 function getFutureWeather(userInputCIty) {
-    let weatherFutureApi = `https://api.openweathermap.org/data/2.5/forecast?q=${userInputCIty}&appid=${weatherApiKey}`;
+    let weatherFutureApi = `https://api.openweathermap.org/data/2.5/forecast?q=${userInputCIty}&appid=${weatherApiKey}&units=metric`;
     $("#forecastWeather").text("");
 
     fetch(weatherFutureApi)
