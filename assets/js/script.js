@@ -122,7 +122,8 @@ function getFutureWeather(userInputCIty) {
                 $("#forecastWeather").append(appendedCard);
             });
 
-            $("#forecastWeather").prepend("<p>5-Day Forecast</p>");
+            prependContent = `<h3><i class="fas fa-flag"></i> 5-Day Forecast: </h3>`
+            $("#forecastWeather").prepend(prependContent);
         });
 }
 
@@ -173,8 +174,10 @@ function whenUserDelteThenRenderThisContent() {
     let displayedContent = `<div class="card mb-5" id="todayWeather">
                                 <img class="card-img" src="./assets/images/weatherIcon.jpg" alt="Card image">
                                     <div class="card-img-overlay">
-                                    <h3>Enter City Name To Get The Weather</h3>
-                                    <h3>Or Click The History...</h3>
+                                        <h4>Enter a valid city name then click search button to get the weather.</h4>
+                                        <h4>Click the saved city in the sidebar to render data.</h4>
+                                        <h4>Click trashcan icon to delete single rocord.</h4>
+                                        <h4>Clear All button will delete all saved cities.</h4>
                                     </div>
                             </div>
                             <div class="row" id="forecastWeather"></div>`
