@@ -12,11 +12,15 @@
     color: var(--secondary-color);
 }
 
+/* Which will select every element, and give it a red border. Inspect your html page, and see if you can decipher which element may be causing the extra space. */
+/* * { border: 1px solid red; } */
 
 /* {============================= Element Selectors =============================} */
 body {
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
+    /* background: linear-gradient(#e66465, #9198e5); */
+    background: lightgrey;
 }
 
 header {
@@ -25,7 +29,7 @@ header {
 }
 
 main {
-    background: linear-gradient(#e66465, #9198e5);
+    /* background: linear-gradient(#e66465, #9198e5); */
 }
 
 /* textarea {
