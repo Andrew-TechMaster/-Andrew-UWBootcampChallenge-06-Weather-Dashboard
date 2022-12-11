@@ -20,7 +20,7 @@ body {
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
     /* background: linear-gradient(#e66465, #9198e5); */
-    background: lightgrey;
+    background: #bfa8bb;
 }
 
 header {
@@ -47,14 +47,17 @@ main {
 }
 
 .card-header {
-    background-image: url(../images/grassAndRiver.png);
-    background-position: top;
+    /* background-image: url(../images/grassAndRiver.png);
+    background-position: top; */
     /* object-fit: contain; */
+    background-color: #33ab5f; 
 }
 
 .card-body {
-    background-image: url(../images/grassAndRiver.png);
-    background-position: 10% 59%;
+    /* background-image: url(../images/grassAndRiver.png); */
+    /* background-position: 10% 59%; */
+    /* font-weight: 900; */
+    background-color: #8cdba9;
 }
 
 /* {============================= Id Selectors =============================} */

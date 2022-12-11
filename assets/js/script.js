@@ -112,9 +112,9 @@ function getFutureWeather(userInputCIty) {
                         </div>
                         <div class="card-body">
                             <p><img src="${theWeatherIcon}"</p>
-                            <p class="card-text">Temp: ${theTemp} °C</p>
-                            <p class="card-text">Wind: ${theWind} MPH</p>
-                            <p class="card-text">Humidity: ${theHumidity} %</p>
+                            <p class="card-text"><i class="fas fa-thermometer-three-quarters"></i> Temp: ${theTemp} °C</p>
+                            <p class="card-text"><i class="fas fa-wind"></i> Wind: ${theWind} MPH</p>
+                            <p class="card-text"><i class="fas fa-umbrella"></i> Humidity: ${theHumidity} %</p>
                         </div>
                     </div>
                 </div>`;
