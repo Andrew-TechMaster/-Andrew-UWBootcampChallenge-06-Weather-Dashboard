@@ -8,7 +8,7 @@ let testApi = `https://api.openweathermap.org/data/2.5/weather?q=tokyo&appid=${w
 let userCityInput = $("#userCityInput");
 let searchBtnEl = $("#searchBtn");
 let clearAllBtnEl = $("#clearBtn");
-var resultCityArray = [];
+let resultCityArray = [];
 
 /* {============================= Functions (callback) =============================} */
 function getTestingApi(requestUrl) {
@@ -84,8 +84,8 @@ function getFutureWeather(userInputCIty) {
     fetch(weatherFutureApi)
         .then((response) => { return response.json(); })
         .then(function (data) {
-            console.log("inside get future func");
-            console.log(data);
+            // console.log("inside get future func");
+            // console.log(data);
             let future5DaysData = data.list.slice(0, 5);
             // console.log(future5DaysData);
             // console.log(future5DaysData[0]);
@@ -126,7 +126,10 @@ function getUserInput() {
 
 function createCityListItem(listItemName) {
     // let listItemName = getUserInput();
-    let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3 data-cityName=${listItemName}">${listItemName}</a>`
+    let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3">
+                                ${listItemName}
+                                <button type="button" class="btn btn-danger" id="deleteBtn"><i class="far fa-trash-alt"></i></button>
+                            </a>`
     $(".list-group").append(appendedListItem);
 
     resultCityArray.push(listItemName);
@@ -136,6 +139,17 @@ function createCityListItem(listItemName) {
 function pushDataToLocalStorage(cityArray) {
     var userInputCityName_Serialization = JSON.stringify(cityArray);
     localStorage.setItem("userInputCityName", userInputCityName_Serialization);
+}
+
+// function pushDataToLocalStorage(cityName) {
+//     resultCityArray.push(cityName);
+//     var userInputCityName_Serialization = JSON.stringify(resultCityArray);
+//     localStorage.setItem("userInputCityName", userInputCityName_Serialization);
+// }
+
+function diplayCityNameInHeader(someString) {
+    var headerCityEl = $("#titleCity");
+    return headerCityEl.text(`City: ${someString}`);
 }
 
 function init() {
@@ -162,17 +176,19 @@ searchBtnEl.on("click", function (evt) {
     var searchedCityName = (resultCityArray.includes(capitalizeduserInput)) ? alert("This app has already contained your input city") : userInput;
     var capitalizedCityName = searchedCityName[0].toUpperCase() + searchedCityName.substring(1).toLowerCase();
 
-    $("#titleCity").text(`City: ${capitalizedCityName}`);
+    // $("#titleCity").text(`City: ${capitalizedCityName}`);
+    diplayCityNameInHeader(capitalizedCityName);
     getTodayWeather(capitalizedCityName);
     getFutureWeather(capitalizedCityName);
 
     createCityListItem(capitalizedCityName);
 
     userCityInput.val("");
+
     console.log("------Inside Event Listener------");
     // console.log(getTestingApi(testApi));
-    console.log(resultCityArray);
-    console.log(userInput);
+    // console.log(resultCityArray);
+    // console.log(userInput);
     console.log("------End Event Listener------");
 });
 
@@ -188,8 +204,38 @@ $(".list-group").on("click", ".list-group-item", function (evt) {
     evt.preventDefault();
 
     var selectedCityName = $(this).text();
+    diplayCityNameInHeader(selectedCityName);
     getTodayWeather(selectedCityName);
     getFutureWeather(selectedCityName);
+});
+
+$(".list-group").on("click", "#deleteBtn", function (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    // console.log($(this).parent().text().trim());
+    // console.log(typeof $(this).parent().text());
+    // console.log($(this).siblings());
+    var deletedCityName = $(this).parent().text().trim();
+
+    var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
+    resultCityArray = userInputCityName_DeSerialization;
+    resultCityArray = resultCityArray.filter((item) => item !== deletedCityName);
+
+    // localStorage.clear();
+    pushDataToLocalStorage(resultCityArray);
+
+    $(".list-group").text("");
+    resultCityArray.forEach(element => {
+        let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3">
+                                    ${element}
+                                    <button type="button" class="btn btn-danger" id="deleteBtn"><i class="far fa-trash-alt"></i></button>
+                                </a>`;
+
+        $(".list-group").append(appendedListItem);
+    })
 })
+
 /* {============================= Calling functions  =============================} */
 init();
+console.log(resultCityArray);

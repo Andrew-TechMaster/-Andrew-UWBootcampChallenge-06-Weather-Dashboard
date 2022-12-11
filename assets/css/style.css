@@ -29,5 +29,14 @@ body {
 } */
 
 /* {============================= Class Selectors =============================} */
+.list-group-item {
+    position: relative;
+}
 
 /* {============================= Id Selectors =============================} */
+#deleteBtn {
+    position: absolute;
+    right: 0px;
+    top: 0;
+    padding: 1.5%;
+}
