@@ -19,6 +19,15 @@ body {
     font-size: 16px;
 }
 
+header {
+    background-image: url(../images/headerBg.jpg);
+    background-position: center;
+}
+
+main {
+    background: linear-gradient(#e66465, #9198e5);
+}
+
 /* textarea {
     background: transparent;
     border: none;
@@ -31,6 +40,17 @@ body {
 /* {============================= Class Selectors =============================} */
 .list-group-item {
     position: relative;
+}
+
+.card-header {
+    background-image: url(../images/grassAndRiver.png);
+    background-position: top;
+    /* object-fit: contain; */
+}
+
+.card-body {
+    background-image: url(../images/grassAndRiver.png);
+    background-position: 10% 59%;
 }
 
 /* {============================= Id Selectors =============================} */

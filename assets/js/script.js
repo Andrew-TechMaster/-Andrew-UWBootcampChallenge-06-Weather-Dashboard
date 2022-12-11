@@ -32,13 +32,13 @@ function transferTimestamp(unix_timestamp) {
     // multiplied by 1000 so that the argument is in milliseconds, not seconds.
     let date = new Date(unix_timestamp * 1000);
     // Month part from the timestamp
-    let todayMonth = date.getMonth();
+    let todayMonth = date.getMonth() + 1;
     // Day part from the timestamp
     let todayDay = date.getDate();
     // Year part from the timestamp
     let todayYear = date.getFullYear();
 
-    // Will display time in 10:30:23 format
+    // Will display time in format
     let formattedTime = `${todayMonth}/${todayDay}/${todayYear}`;
     return formattedTime;
 }
@@ -52,13 +52,14 @@ function getTodayWeather(userInputCity) {
         .then((response) => { return response.json(); })
         .then(function (data) {
             // console.log("inside get today func");
-            // console.log(data);
+            console.log(data);
 
             let todayDate = transferTimestamp(data.dt);
             let todayWeatherIcon = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`;
             let todayTemp = data.main.temp;
             let todayWind = data.wind.speed;
             let todayHumidity = data.main.humidity;
+            let countryFlag = `https://countryflagsapi.com/png/${data.sys.country}`
 
             // $("#selectedCity").html(`${userInputCity}  ${todayDate}  <img src="${todayWeatherIcon}">`);
             // $("#todayTemp").text(todayTemp);
@@ -67,15 +68,18 @@ function getTodayWeather(userInputCity) {
 
             let appendedTodayWeather = `
             <div class="card-header">
-                <h3 id="selectedCity">${userInputCity}  (${todayDate})  <img src="${todayWeatherIcon}"</h3>
+                <h3 id="selectedCity">${userInputCity}  (${todayDate})  <img src="${todayWeatherIcon}"></h3>
             </div>
             <div class="card-body">
-                <p class="card-text">Temp: ${todayTemp} C</p>
-                <p class="card-text">Wind: ${todayWind} MPH</p>
-                <p class="card-text">Humidity: ${todayHumidity} %</p>
+                <p class="card-text"> <i class="fas fa-thermometer-three-quarters"></i> Temp: ${todayTemp} °C</p>
+                <p class="card-text"> <i class="fas fa-wind"></i> Wind: ${todayWind} MPH</p>
+                <p class="card-text"> <i class="fas fa-umbrella"></i> Humidity: ${todayHumidity} %</p>
             </div>`;
 
+            let appendedBackGround = `<img src="${countryFlag}" style="width:10%; margin-right: 30px">`;
+
             $("#todayWeather").append(appendedTodayWeather);
+            $("#titleCity").prepend(appendedBackGround);
         });
 }
 
@@ -87,7 +91,7 @@ function getFutureWeather(userInputCIty) {
         .then((response) => { return response.json(); })
         .then(function (data) {
             // console.log("inside get future func");
-            // console.log(data);
+            console.log(data);
             let future5DaysData = data.list.slice(0, 5);
             // console.log(future5DaysData);
             // console.log(future5DaysData[0]);
@@ -108,7 +112,7 @@ function getFutureWeather(userInputCIty) {
                         </div>
                         <div class="card-body">
                             <p><img src="${theWeatherIcon}"</p>
-                            <p class="card-text">Temp: ${theTemp} C</p>
+                            <p class="card-text">Temp: ${theTemp} °C</p>
                             <p class="card-text">Wind: ${theWind} MPH</p>
                             <p class="card-text">Humidity: ${theHumidity} %</p>
                         </div>
