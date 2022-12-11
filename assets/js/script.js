@@ -5,9 +5,11 @@ let testApi = `https://api.openweathermap.org/data/2.5/weather?q=tokyo&appid=${w
 // let weatherCurrentApi = `https://api.openweathermap.org/data/2.5/weather?q=${searchedCityName}&appid=${weatherApiKey}`;
 // let weatherFutureApi = `https://api.openweathermap.org/data/2.5/forecast?q=${searchedCityName}&appid=${weatherApiKey}`;
 
-let userCityInput = $("#userCityInput");
+let userCityInputEl = $("#userCityInput");
 let searchBtnEl = $("#searchBtn");
 let clearAllBtnEl = $("#clearBtn");
+let cityListEl = $(".list-group");
+
 let resultCityArray = [];
 
 /* {============================= Functions (callback) =============================} */
@@ -28,16 +30,16 @@ function getTestingApi(requestUrl) {
 function transferTimestamp(unix_timestamp) {
     // Create a new JavaScript Date object based on the timestamp
     // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-    var date = new Date(unix_timestamp * 1000);
+    let date = new Date(unix_timestamp * 1000);
     // Month part from the timestamp
-    var todayMonth = date.getMonth();
+    let todayMonth = date.getMonth();
     // Day part from the timestamp
-    var todayDay = date.getDate();
+    let todayDay = date.getDate();
     // Year part from the timestamp
-    var todayYear = date.getFullYear();
+    let todayYear = date.getFullYear();
 
     // Will display time in 10:30:23 format
-    var formattedTime = `${todayMonth}/${todayDay}/${todayYear}`;
+    let formattedTime = `${todayMonth}/${todayDay}/${todayYear}`;
     return formattedTime;
 }
 
@@ -121,7 +123,7 @@ function getFutureWeather(userInputCIty) {
 }
 
 function getUserInput() {
-    return userCityInput.val();
+    return userCityInputEl.val();
 }
 
 function createCityListItem(listItemName) {
@@ -130,34 +132,59 @@ function createCityListItem(listItemName) {
                                 ${listItemName}
                                 <button type="button" class="btn btn-danger" id="deleteBtn"><i class="far fa-trash-alt"></i></button>
                             </a>`
-    $(".list-group").append(appendedListItem);
 
-    resultCityArray.push(listItemName);
-    pushDataToLocalStorage(resultCityArray);
+    cityListEl.append(appendedListItem);
+    // resultCityArray.push(listItemName);
+    // pushDataToLocalStorage(resultCityArray);
 }
 
-function pushDataToLocalStorage(cityArray) {
-    var userInputCityName_Serialization = JSON.stringify(cityArray);
-    localStorage.setItem("userInputCityName", userInputCityName_Serialization);
-}
-
-// function pushDataToLocalStorage(cityName) {
-//     resultCityArray.push(cityName);
-//     var userInputCityName_Serialization = JSON.stringify(resultCityArray);
+// function pushDataToLocalStorage(cityArray) {
+//     var userInputCityName_Serialization = JSON.stringify(cityArray);
 //     localStorage.setItem("userInputCityName", userInputCityName_Serialization);
 // }
 
+function addData(aCityName) {
+    resultCityArray.push(aCityName);
+}
+
+function pushDataToLocalStorage(anArray) {
+    let userInputCityName_Serialization = JSON.stringify(anArray);
+    localStorage.setItem("userInputCityName", userInputCityName_Serialization);
+}
+
+function pullDataFromLocalStorage() {
+    let localStorageJsonData = localStorage.getItem("userInputCityName");
+    let CityName_DeSerialization = JSON.parse(localStorageJsonData);
+    return CityName_DeSerialization;
+}
+
 function diplayCityNameInHeader(someString) {
-    var headerCityEl = $("#titleCity");
-    return headerCityEl.text(`City: ${someString}`);
+    let headerCityEl = $("#titleCity");
+    headerCityEl.text(`City: ${someString}`);
+}
+
+function whenUserDelteThenRenderThisContent() {
+    $("#majorSection").text("");
+
+    let displayedContent = `<div class="card mb-5" id="todayWeather">
+                                <img class="card-img" src="./assets/images/weatherIcon.jpg" alt="Card image">
+                                    <div class="card-img-overlay">
+                                    <h3>Enter City Name To Get The Weather</h3>
+                                    <h3>Or Click The History...</h3>
+                                    </div>
+                            </div>
+                            <div class="row" id="forecastWeather"></div>`
+    $("#majorSection").append(displayedContent);
 }
 
 function init() {
-    var resultCityArray = []; // why need this one again? Already empty at the start?
-    var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
-    var exisitingData = userInputCityName_DeSerialization;
-    if (exisitingData !== null) {
-        resultCityArray = exisitingData;
+    // var resultCityArray = []; // why need this one again? Already empty at the start?
+    // var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
+    // var exisitingData = userInputCityName_DeSerialization;
+    let pulledData = pullDataFromLocalStorage();
+    if (pulledData !== null) {
+        resultCityArray = pulledData;
+        // pushDataToLocalStorage(resultCityArray);
         // console.log(resultCityArray);
         // console.log(resultCityArray[0]);
         resultCityArray.forEach(element => {
@@ -170,11 +197,11 @@ function init() {
 searchBtnEl.on("click", function (evt) {
     evt.preventDefault();
 
-    var userInput = getUserInput();
-    var capitalizeduserInput = userInput[0].toUpperCase() + userInput.substring(1).toLowerCase();
+    let userInput = getUserInput();
+    let capitalizeduserInput = userInput[0].toUpperCase() + userInput.substring(1).toLowerCase();
 
-    var searchedCityName = (resultCityArray.includes(capitalizeduserInput)) ? alert("This app has already contained your input city") : userInput;
-    var capitalizedCityName = searchedCityName[0].toUpperCase() + searchedCityName.substring(1).toLowerCase();
+    let searchedCityName = (resultCityArray.includes(capitalizeduserInput)) ? alert("This app has already contained your input city") : userInput;
+    let capitalizedCityName = searchedCityName[0].toUpperCase() + searchedCityName.substring(1).toLowerCase();
 
     // $("#titleCity").text(`City: ${capitalizedCityName}`);
     diplayCityNameInHeader(capitalizedCityName);
@@ -182,14 +209,16 @@ searchBtnEl.on("click", function (evt) {
     getFutureWeather(capitalizedCityName);
 
     createCityListItem(capitalizedCityName);
+    addData(capitalizedCityName);
+    pushDataToLocalStorage(resultCityArray);
 
-    userCityInput.val("");
+    userCityInputEl.val("");
 
-    console.log("------Inside Event Listener------");
+    console.log("<------Inside Event Listener Create------>");
     // console.log(getTestingApi(testApi));
-    // console.log(resultCityArray);
+    console.log(resultCityArray);
     // console.log(userInput);
-    console.log("------End Event Listener------");
+    console.log("<------End Event Listener Create------>");
 });
 
 clearAllBtnEl.on("click", function (evt) {
@@ -197,19 +226,26 @@ clearAllBtnEl.on("click", function (evt) {
 
     localStorage.clear();
     resultCityArray = [];
-    $(".list-group").text("");
+    cityListEl.text("");
+    whenUserDelteThenRenderThisContent();
+    diplayCityNameInHeader("Not Found");
 });
 
-$(".list-group").on("click", ".list-group-item", function (evt) {
+cityListEl.on("click", ".list-group-item", function (evt) {
     evt.preventDefault();
 
-    var selectedCityName = $(this).text();
+    let selectedCityName = $(this).text();
     diplayCityNameInHeader(selectedCityName);
     getTodayWeather(selectedCityName);
     getFutureWeather(selectedCityName);
+
+    console.log("<------Inside Event Listener Click List Item------>");
+    console.log(resultCityArray);
+    console.log(`${selectedCityName} is selected`);
+    console.log("<------End Event Listener Click List Item------>");
 });
 
-$(".list-group").on("click", "#deleteBtn", function (evt) {
+cityListEl.on("click", "#deleteBtn", function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
 
@@ -218,24 +254,40 @@ $(".list-group").on("click", "#deleteBtn", function (evt) {
     // console.log($(this).siblings());
     var deletedCityName = $(this).parent().text().trim();
 
-    var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
-    resultCityArray = userInputCityName_DeSerialization;
-    resultCityArray = resultCityArray.filter((item) => item !== deletedCityName);
+    // var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
+    // resultCityArray = userInputCityName_DeSerialization;
+    let pulledData = pullDataFromLocalStorage();
+    resultCityArray = pulledData.filter((item) => item !== deletedCityName);
 
     // localStorage.clear();
     pushDataToLocalStorage(resultCityArray);
 
-    $(".list-group").text("");
-    resultCityArray.forEach(element => {
-        let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3">
-                                    ${element}
-                                    <button type="button" class="btn btn-danger" id="deleteBtn"><i class="far fa-trash-alt"></i></button>
-                                </a>`;
+    // $(".list-group").text("");
+    // resultCityArray.forEach(element => {
+    //     let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3">
+    //                                 ${element}
+    //                                 <button type="button" class="btn btn-danger" id="deleteBtn"><i class="far fa-trash-alt"></i></button>
+    //                             </a>`;
 
-        $(".list-group").append(appendedListItem);
-    })
+    //     $(".list-group").append(appendedListItem);
+    // })
+
+    cityListEl.text("");
+    resultCityArray.forEach(element => {
+        createCityListItem(element);
+    });
+
+    whenUserDelteThenRenderThisContent();
+    diplayCityNameInHeader("Not Found");
+    console.log("<------Inside Event Listener Delete------>");
+    console.log(resultCityArray);
+    console.log(`${deletedCityName} is deleted`);
+    console.log("<------End Event Listener Delete------>");
 })
 
 /* {============================= Calling functions  =============================} */
 init();
+
+console.log("<======refresh start======>");
 console.log(resultCityArray);
+console.log("<======refresh end======>");
