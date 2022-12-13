@@ -1,37 +1,70 @@
 /* {============================= DOM / Element / Variable Declaration  =============================} */
+// let requestUrl = 'https://api.github.com/orgs/nodejs/repos';
 let weatherApiKey = "91017c2e5ac723c2be5c5162fa92b851";
+let testApi = `https://api.openweathermap.org/data/2.5/weather?q=tokyo&appid=${weatherApiKey}`;
+// let weatherCurrentApi = `https://api.openweathermap.org/data/2.5/weather?q=${searchedCityName}&appid=${weatherApiKey}`;
+// let weatherFutureApi = `https://api.openweathermap.org/data/2.5/forecast?q=${searchedCityName}&appid=${weatherApiKey}`;
+
 let userCityInputEl = $("#userCityInput");
 let searchBtnEl = $("#searchBtn");
 let clearAllBtnEl = $("#clearBtn");
 let cityListEl = $(".list-group");
+
 let resultCityArray = [];
 
 /* {============================= Functions (callback) =============================} */
-// <-- [--------- For transfer timestamp to formatted time ---------] -->
+function getTestingApi(requestUrl) {
+    fetch(requestUrl)
+        .then(function (response) {
+            console.log("Get Json Response:");
+            console.log(response);
+            return response.json();
+        })
+        .then(function (data) {
+            console.log("Get Data:");
+            console.log(data);
+            console.log(data.main);
+        });
+}
+
 function transferTimestamp(unix_timestamp) {
+    // Create a new JavaScript Date object based on the timestamp
+    // multiplied by 1000 so that the argument is in milliseconds, not seconds.
     let date = new Date(unix_timestamp * 1000);
+    // Month part from the timestamp
     let todayMonth = date.getMonth() + 1;
+    // Day part from the timestamp
     let todayDay = date.getDate();
+    // Year part from the timestamp
     let todayYear = date.getFullYear();
 
+    // Will display time in format
     let formattedTime = `${todayMonth}/${todayDay}/${todayYear}`;
     return formattedTime;
-};
+}
 
-// <-- [--------- Call Api (Today) & Display to the browser (1 card) ---------] -->
 function getTodayWeather(userInputCity) {
     let todayWeatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userInputCity}&appid=${weatherApiKey}&units=metric`;
+    // let todayDate = dayjs().format('MM/DD/YYYY (dddd)')
     $("#todayWeather").text("");
 
     fetch(todayWeatherApi)
         .then((response) => { return response.json(); })
         .then(function (data) {
+            // console.log("inside get today func");
+            // console.log(data);
+
             let todayDate = transferTimestamp(data.dt);
             let todayWeatherIcon = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`;
             let todayTemp = data.main.temp;
             let todayWind = data.wind.speed;
             let todayHumidity = data.main.humidity;
             let countryFlag = `https://countryflagsapi.com/png/${data.sys.country}`
+
+            // $("#selectedCity").html(`${userInputCity}  ${todayDate}  <img src="${todayWeatherIcon}">`);
+            // $("#todayTemp").text(todayTemp);
+            // $("#todayWind").text(todayWind);
+            // $("#todayHumidity").text(todayHumidity);
 
             let appendedTodayWeather = `
             <div class="card-header">
@@ -48,22 +81,32 @@ function getTodayWeather(userInputCity) {
             $("#todayWeather").append(appendedTodayWeather);
             $("#titleCity").prepend(appendedBackGround);
         });
-};
+}
 
-// <-- [--------- Call Api (futrue 5 days) & Display to the browser (5 cards) ---------] -->
 function getFutureWeather(userInputCIty) {
     let weatherFutureHourlyApi = `https://api.openweathermap.org/data/2.5/forecast?q=${userInputCIty}&appid=${weatherApiKey}&units=metric`;
+    // let wetherFutureDailyApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`
     $("#forecastWeather").text("");
 
     fetch(weatherFutureHourlyApi)
         .then((response) => { return response.json(); })
         .then(function (data) {
-            // return 40 results, extract 5 of the 40 for each day
+            // console.log("inside get future func");
+            console.log(data);
+            // console.log(data.city.coord)
+            // console.log(data.city.coord.lat)
+            // console.log(data.city.coord.lon)
+
+            // let future3HoursData = data.list.slice(0, 5);
             let future5DaysData = [];
             for (let index = 0; index < data.list.length; index += 8) {
                 const element = data.list[index];
                 future5DaysData.push(element);
             }
+
+            // console.log(future5HoursData);
+            // console.log(future5HoursData[0]);
+            // console.log(typeof future5HoursData);
 
             future5DaysData.forEach(element => {
                 let theDate = transferTimestamp(element.dt);
@@ -92,49 +135,62 @@ function getFutureWeather(userInputCIty) {
 
             prependContent = `<h3><i class="fas fa-flag"></i> 5-Day Forecast: </h3>`
             $("#forecastWeather").prepend(prependContent);
-        });
-};
 
-// <-- [--------- Simply return user input val ---------] -->
+            // let cityLat = data.city.coord.lat;
+            // let cityLon = data.city.coord.lon;
+            // let future5DailyApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${cityLat}&lon=${cityLon}&appid=${weatherApiKey}&units=metric`;
+            // console.log(future5DailyApi);
+            // return fetch(future5DailyApi);
+        });
+    // .then((response) => { return response.json() })
+    // .then(function (data) {
+    //     console.log(data);
+    // })
+
+
+}
+
 function getUserInput() {
     return userCityInputEl.val();
-};
+}
 
-// <-- [--------- Create list of city name under search bar ---------] -->
 function createCityListItem(listItemName) {
+    // let listItemName = getUserInput();
     let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3">
                                 ${listItemName}
                                 <button type="button" class="btn btn-danger" id="deleteBtn"><i class="far fa-trash-alt"></i></button>
                             </a>`
 
     cityListEl.append(appendedListItem);
-};
+    // resultCityArray.push(listItemName);
+    // pushDataToLocalStorage(resultCityArray);
+}
 
-// <-- [--------- Call to add data into local array ---------] -->
+// function pushDataToLocalStorage(cityArray) {
+//     var userInputCityName_Serialization = JSON.stringify(cityArray);
+//     localStorage.setItem("userInputCityName", userInputCityName_Serialization);
+// }
+
 function addData(aCityName) {
     resultCityArray.push(aCityName);
-};
+}
 
-// <-- [--------- Call to push data to the remote (local storage) ---------] -->
 function pushDataToLocalStorage(anArray) {
     let userInputCityName_Serialization = JSON.stringify(anArray);
     localStorage.setItem("userInputCityName", userInputCityName_Serialization);
-};
+}
 
-// <-- [--------- Call to pull data from remote (local storage) & Tranfer data to javascript object ---------] -->
 function pullDataFromLocalStorage() {
     let localStorageJsonData = localStorage.getItem("userInputCityName");
     let CityName_DeSerialization = JSON.parse(localStorageJsonData);
     return CityName_DeSerialization;
-};
+}
 
-// <-- [--------- Simpy pass user input then display in the header ---------] -->
 function diplayCityNameInHeader(someString) {
     let headerCityEl = $("#titleCity");
     headerCityEl.text(`City: ${someString}`);
-};
+}
 
-// <-- [--------- As it mentioned, diplay the content when user delete(single item or all) the record ---------] -->
 function whenUserDelteThenRenderThisContent() {
     $("#majorSection").text("");
 
@@ -149,43 +205,52 @@ function whenUserDelteThenRenderThisContent() {
                             </div>
                             <div class="row" id="forecastWeather"></div>`
     $("#majorSection").append(displayedContent);
-};
+}
 
-// <-- [--------- init() ---------] -->
 function init() {
+    // var resultCityArray = []; // why need this one again? Already empty at the start?
+    // var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
+    // var exisitingData = userInputCityName_DeSerialization;
     let pulledData = pullDataFromLocalStorage();
     if (pulledData !== null) {
         resultCityArray = pulledData;
+        // pushDataToLocalStorage(resultCityArray);
+        // console.log(resultCityArray);
+        // console.log(resultCityArray[0]);
         resultCityArray.forEach(element => {
             createCityListItem(element);
         })
     }
-};
+}
 
 /* {============================= Add Event Listener  =============================} */
-// <-- [--------- When user click "search" with valid city name => Call multiple functions ---------] -->
 searchBtnEl.on("click", function (evt) {
     evt.preventDefault();
 
     let userInput = getUserInput();
     let capitalizeduserInput = userInput[0].toUpperCase() + userInput.substring(1).toLowerCase();
 
-    // make the list unique
     let searchedCityName = (resultCityArray.includes(capitalizeduserInput)) ? alert("This app has already contained your input city") : userInput;
     let capitalizedCityName = searchedCityName[0].toUpperCase() + searchedCityName.substring(1).toLowerCase();
 
-
+    // $("#titleCity").text(`City: ${capitalizedCityName}`);
     diplayCityNameInHeader(capitalizedCityName);
     getTodayWeather(capitalizedCityName);
     getFutureWeather(capitalizedCityName);
+
     createCityListItem(capitalizedCityName);
     addData(capitalizedCityName);
     pushDataToLocalStorage(resultCityArray);
 
     userCityInputEl.val("");
+
+    console.log("<------Inside Event Listener Create------>");
+    // console.log(getTestingApi(testApi));
+    console.log(resultCityArray);
+    // console.log(userInput);
+    console.log("<------End Event Listener Create------>");
 });
 
-// <-- [--------- When user click "clear all" button => Call multiple functions ---------] -->
 clearAllBtnEl.on("click", function (evt) {
     evt.preventDefault();
 
@@ -196,7 +261,6 @@ clearAllBtnEl.on("click", function (evt) {
     diplayCityNameInHeader("Not Found");
 });
 
-// <-- [--------- When user click "list-item" => Render data in the page ---------] -->
 cityListEl.on("click", ".list-group-item", function (evt) {
     evt.preventDefault();
 
@@ -204,23 +268,40 @@ cityListEl.on("click", ".list-group-item", function (evt) {
     diplayCityNameInHeader(selectedCityName);
     getTodayWeather(selectedCityName);
     getFutureWeather(selectedCityName);
+
+    console.log("<------Inside Event Listener Click List Item------>");
+    console.log(resultCityArray);
+    console.log(`${selectedCityName} is selected`);
+    console.log("<------End Event Listener Click List Item------>");
 });
 
-// <-- [--------- When user click "trash can icon" => ---------] -->
 cityListEl.on("click", "#deleteBtn", function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
 
-    // need to trim() or it will return a bunch of space...
+    // console.log($(this).parent().text().trim());
+    // console.log(typeof $(this).parent().text());
+    // console.log($(this).siblings());
     var deletedCityName = $(this).parent().text().trim();
+
+    // var userInputCityName_DeSerialization = JSON.parse(localStorage.getItem("userInputCityName"));
+    // resultCityArray = userInputCityName_DeSerialization;
     let pulledData = pullDataFromLocalStorage();
-    // filter the deleted city out in the local array 
     resultCityArray = pulledData.filter((item) => item !== deletedCityName);
 
-    // push to remote (local storage) again / replace to new one(same key name so it will automatically cover)
+    // localStorage.clear();
     pushDataToLocalStorage(resultCityArray);
 
-    // first clear all the context and then re-render a new list result
+    // $(".list-group").text("");
+    // resultCityArray.forEach(element => {
+    //     let appendedListItem = `<a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3">
+    //                                 ${element}
+    //                                 <button type="button" class="btn btn-danger" id="deleteBtn"><i class="far fa-trash-alt"></i></button>
+    //                             </a>`;
+
+    //     $(".list-group").append(appendedListItem);
+    // })
+
     cityListEl.text("");
     resultCityArray.forEach(element => {
         createCityListItem(element);
@@ -228,7 +309,15 @@ cityListEl.on("click", "#deleteBtn", function (evt) {
 
     whenUserDelteThenRenderThisContent();
     diplayCityNameInHeader("Not Found");
-});
+    console.log("<------Inside Event Listener Delete------>");
+    console.log(resultCityArray);
+    console.log(`${deletedCityName} is deleted`);
+    console.log("<------End Event Listener Delete------>");
+})
 
 /* {============================= Calling functions  =============================} */
 init();
+
+console.log("<======refresh start======>");
+console.log(resultCityArray);
+console.log("<======refresh end======>");
