@@ -30,22 +30,21 @@
         <div class="row">
             <!-- [--------- Aside ---------] -->
             <aside class="col-4">
+                <!-- Searching area -->
                 <form class="mb-5">
                     <fieldset>
-                        <!-- <legend>Search for the city:</legend> -->
                         <div class="mb-3">
                             <label for="userCityInput" class="form-label">Search for the city:</label>
                             <input type="text" id="userCityInput" class="form-control"
                                 placeholder="seattle/tokyo/seoul...">
                         </div>
-                        <!-- <button type="submit" class="btn btn-lg btn-primary">Search</button> -->
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary" id="searchBtn" type="button">Search City</button>
                             <button class="btn btn-danger" id="clearBtn" type="button">Clear All</button>
                         </div>
                     </fieldset>
                 </form>
-
+                <!-- List-item city area -->
                 <div class="list-group">
                     <!-- <a href="#" class="list-group-item list-group-item-action mb-3">Seattle</a>
                     <a href="#" class="list-group-item list-group-item-action list-group-item-primary mb-3">Tokyo</a>
@@ -56,6 +55,7 @@
 
             <!-- [--------- Major Section ---------] -->
             <section class="col-8" id="majorSection">
+                <!-- Today weather / Largert card / Created by javascript -->
                 <!-- <div class="card mb-5" id="todayWeather">
                     <div class="card-header">
                         <h3 id="selectedCity">Seattle <span>(TodayDate)</span> <span>weatherIcon</span> </h3>
@@ -66,6 +66,8 @@
                         <p class="card-text">Humidity: <span id="todayHumidity">44</span> %</p>
                     </div>
                 </div> -->
+
+                <!-- Default / Menu -->
                 <div class="card mb-5" id="todayWeather">
                     <img class="card-img" src="./assets/images/weatherIcon.jpg" alt="Card image">
                     <div class="card-img-overlay">
@@ -76,6 +78,7 @@
                     </div>
                 </div>
 
+                <!-- Future weather / 5 cards -->
                 <div class="row" id="forecastWeather">
                     <!-- <p>5-Day Forecast:</p> -->
                     <!-- <div class="col">
@@ -149,14 +152,13 @@
     </main>
 
 
-
     <!-- {============================= JavaScript =============================} -->
     <!-- [--------- Jquery ---------] -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <!-- [--------- For Bootstrap ---------] -->
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
         integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
-    <!-- [---------  Day.js library ---------] -->
+    <!-- [---------  Day.js library (not used in this project) ---------] -->
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <!-- [--------- Own Script ---------] -->
     <script src="./assets/js/script.js"></script>
