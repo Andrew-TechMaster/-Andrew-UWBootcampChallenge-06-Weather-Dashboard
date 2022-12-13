@@ -52,7 +52,7 @@ function getTodayWeather(userInputCity) {
         .then((response) => { return response.json(); })
         .then(function (data) {
             // console.log("inside get today func");
-            console.log(data);
+            // console.log(data);
 
             let todayDate = transferTimestamp(data.dt);
             let todayWeatherIcon = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`;
@@ -84,18 +84,29 @@ function getTodayWeather(userInputCity) {
 }
 
 function getFutureWeather(userInputCIty) {
-    let weatherFutureApi = `https://api.openweathermap.org/data/2.5/forecast?q=${userInputCIty}&appid=${weatherApiKey}&units=metric`;
+    let weatherFutureHourlyApi = `https://api.openweathermap.org/data/2.5/forecast?q=${userInputCIty}&appid=${weatherApiKey}&units=metric`;
+    // let wetherFutureDailyApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`
     $("#forecastWeather").text("");
 
-    fetch(weatherFutureApi)
+    fetch(weatherFutureHourlyApi)
         .then((response) => { return response.json(); })
         .then(function (data) {
             // console.log("inside get future func");
             console.log(data);
-            let future5DaysData = data.list.slice(0, 5);
-            // console.log(future5DaysData);
-            // console.log(future5DaysData[0]);
-            // console.log(typeof future5DaysData);
+            // console.log(data.city.coord)
+            // console.log(data.city.coord.lat)
+            // console.log(data.city.coord.lon)
+
+            // let future3HoursData = data.list.slice(0, 5);
+            let future5DaysData = [];
+            for (let index = 0; index < data.list.length; index += 8) {
+                const element = data.list[index];
+                future5DaysData.push(element);
+            }
+
+            // console.log(future5HoursData);
+            // console.log(future5HoursData[0]);
+            // console.log(typeof future5HoursData);
 
             future5DaysData.forEach(element => {
                 let theDate = transferTimestamp(element.dt);
@@ -124,7 +135,19 @@ function getFutureWeather(userInputCIty) {
 
             prependContent = `<h3><i class="fas fa-flag"></i> 5-Day Forecast: </h3>`
             $("#forecastWeather").prepend(prependContent);
+
+            // let cityLat = data.city.coord.lat;
+            // let cityLon = data.city.coord.lon;
+            // let future5DailyApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${cityLat}&lon=${cityLon}&appid=${weatherApiKey}&units=metric`;
+            // console.log(future5DailyApi);
+            // return fetch(future5DailyApi);
         });
+    // .then((response) => { return response.json() })
+    // .then(function (data) {
+    //     console.log(data);
+    // })
+
+
 }
 
 function getUserInput() {
