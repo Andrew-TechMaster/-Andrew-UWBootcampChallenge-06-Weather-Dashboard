@@ -60,7 +60,7 @@ function getFutureWeather(userInputCIty) {
         .then(function (data) {
             // return 40 results, extract 5 of the 40 for each day
             let future5DaysData = [];
-            for (let index = 8; index < data.list.length; index += 8) {
+            for (let index = 7; index < data.list.length; index += 8) {
                 const element = data.list[index];
                 future5DaysData.push(element);
             }
